@@ -1,11 +1,17 @@
 # Tetris Game
 
-This is a simple implementation of the classic game Tetris using Python and Pygame.
+This is a simple implementation of the classic Tetris game using Python and Pygame.
 
 ## Requirements
 
 - Python 3.x
-- Pygame library (Install using `python3 -m pip install pygame`)
+- Pygame
+
+To install Pygame, run the following command:
+
+```bash
+python3 -m pip install pygame
+```
 
 ## Installation
 
@@ -40,6 +46,7 @@ You can customize various aspects of the game by modifying the `config.py` file:
 - Change the block size (pixel size of each tetromino block) in the `block_size` variable.
 - Toggle the visibility of the ghost figure by setting the `ghost` variable to `True` or `False`.
 - Modify the score increment value in the `score_increment` variable.
+- Adjust the game speed by modifying the `game_speed` variable.
 
 ## License
 

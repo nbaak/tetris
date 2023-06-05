@@ -12,3 +12,6 @@ ghost = True
 
 # score
 score_increment = 100
+
+# game speed (higher value = faster speed)
+game_speed = 5

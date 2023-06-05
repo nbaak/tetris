@@ -1,7 +1,7 @@
 import pygame
 import random
 import config
-import uuid 
+import uuid
 import os
 
 # Initialize the game
@@ -40,6 +40,7 @@ grid = [[BLACK] * grid_width for _ in range(grid_height)]
 
 # Class representing a tetromino shape
 class Shape:
+
     def __init__(self, grid, color, name='Shape'):
         self.grid = grid
         self.color = color
@@ -198,7 +199,7 @@ def draw_preview(shape, x, y):
 
 
 def main():
-    
+
     # Create the screenshots folder if it doesn't exist
     if not os.path.exists("screenshots"):
         os.makedirs("screenshots")
@@ -211,7 +212,7 @@ def main():
 
     clock = pygame.time.Clock()
     game_over = False
-    
+
     score = 0
 
     while not game_over:
@@ -245,7 +246,6 @@ def main():
                     screenshot_name = str(uuid.uuid4()) + ".png"
                     # Save the screenshot in the "screenshots" folder
                     pygame.image.save(window, os.path.join("screenshots", screenshot_name))
-
 
         # Move the current shape down
         if not is_collision(current_shape, current_x, current_y + 1):
@@ -281,7 +281,7 @@ def main():
         pygame.display.update()
 
         # Tick the clock
-        clock.tick(5)
+        clock.tick(config.game_speed)
 
 
 # Run the game
