@@ -86,7 +86,7 @@ SHAPES = [
 
 
 # Function to draw the game grid
-def draw_grid():
+def draw_grid(score):
     for y in range(grid_height):
         for x in range(grid_width):
             pygame.draw.rect(
@@ -138,20 +138,15 @@ def place_tetromino(shape, x, y):
                 grid[y + row][x + col] = shape.color
 
 
-# Define the score variables
-score = 0
-score_increment = config.score_increment
-
 # Function to remove completed rows from the game grid and update the score
-def remove_rows():
-    global score
+def remove_rows(score=0) -> int:
     full_rows = []
     for y in range(grid_height):
         if all(color != BLACK for color in grid[y]):
             full_rows.append(y)
 
     num_rows = len(full_rows)
-    score_increase = num_rows * score_increment
+    score_increase = num_rows * config.score_increment
     score += score_increase
 
     for y in full_rows:
@@ -159,6 +154,7 @@ def remove_rows():
         grid.insert(0, [BLACK] * grid_width)
 
     print("Score:", score)
+    return score
 
 
 # Function to draw the ghost figure
@@ -215,6 +211,8 @@ def main():
 
     clock = pygame.time.Clock()
     game_over = False
+    
+    score = 0
 
     while not game_over:
         for event in pygame.event.get():
@@ -254,7 +252,7 @@ def main():
             current_y += 1
         else:
             place_tetromino(current_shape, current_x, current_y)
-            remove_rows()
+            score = remove_rows(score)
             current_shape = next_shape
             next_shape = random.choice(SHAPES)
             current_x = grid_width // 2 - current_shape.get_width() // 2
@@ -267,7 +265,7 @@ def main():
         window.fill(BLACK)
 
         # Draw the game grid
-        draw_grid()
+        draw_grid(score)
 
         # Draw the current shape
         current_shape.draw(current_x, current_y)
