@@ -1,17 +1,20 @@
 import pygame
 import random
+import config
+import uuid 
+import os
 
 # Initialize the game
 pygame.init()
 
 # Set up the game window
-block_size = 30
-grid_width = 10
-grid_height = 20
+block_size = config.block_size
+grid_width = config.game_width
+grid_height = config.game_height
 next_shape_x = grid_width + 2
 next_shape_y = 2
 
-window_width = (grid_width + 8) * block_size
+window_width = (grid_width + config.info_width) * block_size
 window_height = grid_height * block_size
 window = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("Tetris")
@@ -104,7 +107,7 @@ def draw_grid():
     score_text = font.render(f"Score: {score}", True, WHITE)
     score_rect = score_text.get_rect()
     score_rect.center = (
-        (grid_width + 3) * block_size,
+        (grid_width + config.info_width // 2) * block_size,
         window_height // 2,
     )
     window.blit(score_text, score_rect)
@@ -137,7 +140,7 @@ def place_tetromino(shape, x, y):
 
 # Define the score variables
 score = 0
-score_increment = 100
+score_increment = config.score_increment
 
 # Function to remove completed rows from the game grid and update the score
 def remove_rows():
@@ -199,8 +202,10 @@ def draw_preview(shape, x, y):
 
 
 def main():
-    # Initialize the game grid
-    grid = [[BLACK] * grid_width for _ in range(grid_height)]
+    
+    # Create the screenshots folder if it doesn't exist
+    if not os.path.exists("screenshots"):
+        os.makedirs("screenshots")
 
     # Create a random tetromino shape for the current and next shapes
     current_shape = random.choice(SHAPES)
@@ -208,16 +213,13 @@ def main():
     current_x = grid_width // 2 - current_shape.get_width() // 2
     current_y = 0
 
-    # Game loop
-    running = True
     clock = pygame.time.Clock()
-    fall_time = 0
-    fall_speed = 0.5
+    game_over = False
 
-    while running:
+    while not game_over:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                game_over = True
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     if not is_collision(current_shape, current_x - 1, current_y):
@@ -228,46 +230,63 @@ def main():
                 elif event.key == pygame.K_DOWN:
                     if not is_collision(current_shape, current_x, current_y + 1):
                         current_y += 1
+                elif event.key == pygame.K_SPACE:
+                    rotated_shape = Shape(
+                        current_shape.grid[:], current_shape.color, current_shape.name
+                    )
+                    rotated_shape.rotate()
+                    if not is_collision(rotated_shape, current_x, current_y):
+                        current_shape = rotated_shape
+                elif event.key == pygame.K_q:
+                    game_over = True
                 elif event.key == pygame.K_d:
                     while not is_collision(current_shape, current_x, current_y + 1):
                         current_y += 1
-                elif event.key == pygame.K_SPACE:
-                    current_shape.rotate()
-                    if is_collision(current_shape, current_x, current_y):
-                        current_shape.rotate()  # Revert the rotation
-                elif event.key == pygame.K_q:
-                    running = False
+                elif event.key == pygame.K_s:
+                    # Generate a unique filename using UUID
+                    screenshot_name = str(uuid.uuid4()) + ".png"
+                    # Save the screenshot in the "screenshots" folder
+                    pygame.image.save(window, os.path.join("screenshots", screenshot_name))
 
-        # Move the current shape down with time
-        fall_time += clock.get_rawtime()
-        clock.tick()
 
-        if fall_time / 1000 >= fall_speed:
-            if not is_collision(current_shape, current_x, current_y + 1):
-                current_y += 1
-                fall_time = 0
-            else:
-                place_tetromino(current_shape, current_x, current_y)
-                remove_rows()
-                current_shape = next_shape
-                next_shape = random.choice(SHAPES)
-                current_x = grid_width // 2 - current_shape.get_width() // 2
-                current_y = 0
+        # Move the current shape down
+        if not is_collision(current_shape, current_x, current_y + 1):
+            current_y += 1
+        else:
+            place_tetromino(current_shape, current_x, current_y)
+            remove_rows()
+            current_shape = next_shape
+            next_shape = random.choice(SHAPES)
+            current_x = grid_width // 2 - current_shape.get_width() // 2
+            current_y = 0
 
-                if is_collision(current_shape, current_x, current_y):
-                    running = False
+            if is_collision(current_shape, current_x, current_y):
+                game_over = True
 
-        # Draw the game window
+        # Clear the window
         window.fill(BLACK)
+
+        # Draw the game grid
         draw_grid()
-        draw_ghost(current_shape, current_x, current_y)
-        draw_preview(next_shape, next_shape_x, next_shape_y)
+
+        # Draw the current shape
         current_shape.draw(current_x, current_y)
+
+        # Draw the ghost figure
+        if config.ghost:
+            draw_ghost(current_shape, current_x, current_y)
+
+        # Draw the next shape preview
+        draw_preview(next_shape, next_shape_x, next_shape_y)
+
+        # Update the display
         pygame.display.update()
 
-    # Quit the game
-    pygame.quit()
+        # Tick the clock
+        clock.tick(5)
 
 
+# Run the game
 if __name__ == "__main__":
     main()
+
