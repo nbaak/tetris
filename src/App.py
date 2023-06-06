@@ -4,6 +4,7 @@ import config
 import uuid
 import os
 import colors
+from Shape import Shape
 
 # Initialize the game
 pygame.init()
@@ -27,40 +28,6 @@ COLORS = [colors.CYAN, colors.YELLOW, colors.PURPLE, colors.GREEN, colors.RED, c
 grid = [[colors.BLACK] * grid_width for _ in range(grid_height)]
 
 
-# Class representing a tetromino shape
-class Shape:
-
-    def __init__(self, grid, color, name='Shape'):
-        self.grid = grid
-        self.color = color
-        self.name = name
-
-    def rotate(self):
-        self.grid = list(zip(*reversed(self.grid)))
-
-    def get_height(self):
-        return len(self.grid)
-
-    def get_width(self):
-        return len(self.grid[0])
-
-    def draw(self, x, y):
-        for row in range(len(self.grid)):
-            for col in range(len(self.grid[row])):
-                if self.grid[row][col] == 1:
-                    pygame.draw.rect(
-                        window,
-                        self.color,
-                        (
-                            (x + col) * block_size,
-                            (y + row) * block_size,
-                            block_size,
-                            block_size,
-                        ),
-                    )
-
-    def __repr__(self):
-        return f"{self.name} ({self.color})"
 
 
 # Define the shapes of the tetrominoes
@@ -257,7 +224,7 @@ def main():
         draw_grid(score)
 
         # Draw the current shape
-        current_shape.draw(current_x, current_y)
+        current_shape.draw(window, current_x, current_y, block_size)
 
         # Draw the ghost figure
         if config.ghost:
