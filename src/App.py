@@ -27,9 +27,6 @@ COLORS = [colors.CYAN, colors.YELLOW, colors.PURPLE, colors.GREEN, colors.RED, c
 # Initialize the game grid
 grid = [[colors.BLACK] * grid_width for _ in range(grid_height)]
 
-
-
-
 # Define the shapes of the tetrominoes
 SHAPES = [
     Shape([[1, 1, 1, 1]], colors.CYAN, 'I'),
@@ -39,6 +36,7 @@ SHAPES = [
     Shape([[1, 1, 1], [0, 1, 0]], colors.RED, 'T'),
     Shape([[1, 1, 1], [1, 0, 0]], colors.BLUE, 'L'),
     Shape([[1, 1, 1], [0, 0, 1]], colors.ORANGE, 'J'),
+    Shape([[1]], colors.PINK, 'Dot')
 ]
 
 
