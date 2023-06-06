@@ -3,6 +3,7 @@ import random
 import config
 import uuid
 import os
+import colors
 
 # Initialize the game
 pygame.init()
@@ -19,23 +20,11 @@ window_height = grid_height * block_size
 window = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("Tetris")
 
-# Define colors
-BLACK = (0, 0, 0)
-CYAN = (0, 255, 255)
-YELLOW = (255, 255, 0)
-PURPLE = (128, 0, 128)
-GREEN = (0, 128, 0)
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-ORANGE = (255, 165, 0)
-GRAY = (100, 100, 100)
-WHITE = (255, 255, 255)
-
 # Define the colors of the tetrominoes
-COLORS = [CYAN, YELLOW, PURPLE, GREEN, RED, BLUE, ORANGE]
+COLORS = [colors.CYAN, colors.YELLOW, colors.PURPLE, colors.GREEN, colors.RED, colors.BLUE, colors.ORANGE]
 
 # Initialize the game grid
-grid = [[BLACK] * grid_width for _ in range(grid_height)]
+grid = [[colors.BLACK] * grid_width for _ in range(grid_height)]
 
 
 # Class representing a tetromino shape
@@ -76,13 +65,13 @@ class Shape:
 
 # Define the shapes of the tetrominoes
 SHAPES = [
-    Shape([[1, 1, 1, 1]], CYAN, 'I'),
-    Shape([[1, 1], [1, 1]], YELLOW, 'O'),
-    Shape([[1, 1, 0], [0, 1, 1]], PURPLE, 'S'),
-    Shape([[0, 1, 1], [1, 1, 0]], GREEN, 'Z'),
-    Shape([[1, 1, 1], [0, 1, 0]], RED, 'T'),
-    Shape([[1, 1, 1], [1, 0, 0]], BLUE, 'L'),
-    Shape([[1, 1, 1], [0, 0, 1]], ORANGE, 'J'),
+    Shape([[1, 1, 1, 1]], colors.CYAN, 'I'),
+    Shape([[1, 1], [1, 1]], colors.YELLOW, 'O'),
+    Shape([[1, 1, 0], [0, 1, 1]], colors.PURPLE, 'S'),
+    Shape([[0, 1, 1], [1, 1, 0]], colors.GREEN, 'Z'),
+    Shape([[1, 1, 1], [0, 1, 0]], colors.RED, 'T'),
+    Shape([[1, 1, 1], [1, 0, 0]], colors.BLUE, 'L'),
+    Shape([[1, 1, 1], [0, 0, 1]], colors.ORANGE, 'J'),
 ]
 
 
@@ -99,13 +88,13 @@ def draw_grid(score):
     # Draw background for the right side
     pygame.draw.rect(
         window,
-        GRAY,
+        colors.GRAY,
         (grid_width * block_size, 0, window_width - grid_width * block_size, window_height),
     )
 
     # Draw the score on the right side
     font = pygame.font.Font(None, 30)
-    score_text = font.render(f"Score: {score}", True, WHITE)
+    score_text = font.render(f"Score: {score}", True, colors.WHITE)
     score_rect = score_text.get_rect()
     score_rect.center = (
         (grid_width + config.info_width // 2) * block_size,
@@ -124,7 +113,7 @@ def is_collision(shape, x, y):
                     x + col < 0
                     or x + col >= grid_width
                     or y + row >= grid_height
-                    or grid[y + row][x + col] != BLACK
+                    or grid[y + row][x + col] != colors.BLACK
                 )
             ):
                 return True
@@ -143,7 +132,7 @@ def place_tetromino(shape, x, y):
 def remove_rows(score=0) -> int:
     full_rows = []
     for y in range(grid_height):
-        if all(color != BLACK for color in grid[y]):
+        if all(color != colors.BLACK for color in grid[y]):
             full_rows.append(y)
 
     num_rows = len(full_rows)
@@ -152,7 +141,7 @@ def remove_rows(score=0) -> int:
 
     for y in full_rows:
         del grid[y]
-        grid.insert(0, [BLACK] * grid_width)
+        grid.insert(0, [colors.BLACK] * grid_width)
 
     print("Score:", score)
     return score
@@ -262,7 +251,7 @@ def main():
                 game_over = True
 
         # Clear the window
-        window.fill(BLACK)
+        window.fill(colors.BLACK)
 
         # Draw the game grid
         draw_grid(score)
