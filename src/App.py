@@ -4,7 +4,7 @@ import config
 import uuid
 import os
 import colors
-from Shape import Shape
+from shape import Shape
 
 # Initialize the game
 pygame.init()
