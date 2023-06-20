@@ -2,6 +2,8 @@
 
 This is a simple implementation of the classic Tetris game using Python and Pygame.
 
+![Screenshot](screenshot.png)
+
 ## Requirements
 
 - Python 3.x
